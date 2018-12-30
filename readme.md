@@ -49,9 +49,16 @@ Clone the VM *ubuntu1* two times and name the clones *ubuntu2* and *ubuntu3*.
 
 ![alt text](https://raw.githubusercontent.com/EricTarantino/genericdemo/master/Bildschirmfotovom2018-12-30%2018-23-48.png "install")
 
-Start the VM with Ubuntu. 
+The result:
+![alt text](https://raw.githubusercontent.com/EricTarantino/genericdemo/master/Bildschirmfotovom2018-12-3020-38-09.png "install")
+
+Start the virtual machine *ubuntu1*: 
 
 ![alt text](https://raw.githubusercontent.com/EricTarantino/genericdemo/master/Bildschirmfotovom2018-12-3018-15-59.png "install")
+
+Undergo the setup screens and confirm to install the updates.
+
+
 
 
 
