@@ -1,11 +1,11 @@
 # Spark K8s 
 
-##### Prerequisites
+#### Prerequisites
 - [Oracle Virtual Box](https://www.virtualbox.org/wiki/Downloads)
 - [Ubuntu 18.10](http://releases.ubuntu.com/)
 
 
-##### Oracle virtual Box
+#### Oracle virtual Box Ubuntu
 Install Oracle virtual Box on your host system. 
 
 Create a new virtual machine
@@ -47,174 +47,183 @@ Shut down the VM by closing the window, don't save and eject the installer iso f
 
 Clone the VM *ubuntu1* two times and name the clones *ubuntu2* and *ubuntu3*.
 
-![alt text](https://raw.githubusercontent.com/EricTarantino/genericdemo/master/Bildschirmfotovom2018-12-30%2018-23-48.png "install")
+![alt text](https://raw.githubusercontent.com/EricTarantino/genericdemo/master/Bildschirmfotovom2018-12-30%2018-23-48.png "clone")
 
-The result:
-![alt text](https://raw.githubusercontent.com/EricTarantino/genericdemo/master/Bildschirmfotovom2018-12-3020-38-09.png "install")
+The result
+![alt text](https://raw.githubusercontent.com/EricTarantino/genericdemo/master/Bildschirmfotovom2018-12-3020-38-09.png "installed")
 
-Start the virtual machine *ubuntu1*: 
+On every virtual machine change the network setting, provide NAT adapter and host-only adapter
+![alt text](https://raw.githubusercontent.com/EricTarantino/genericdemo/master/Bildschirmfotovom2018-12-3020-50-41.png "NAT")
 
-![alt text](https://raw.githubusercontent.com/EricTarantino/genericdemo/master/Bildschirmfotovom2018-12-3018-15-59.png "install")
+Set the Adapter 2 to *Host-only Adapter*
+![alt text](https://raw.githubusercontent.com/EricTarantino/genericdemo/master/Bildschirmfotovom2018-12-3021-01-11.png "Host-only Adapter")
 
-Undergo the setup screens and confirm to install the updates.
+Start the virtual machine *ubuntu1*
+![alt text](https://raw.githubusercontent.com/EricTarantino/genericdemo/master/Bildschirmfotovom2018-12-3018-15-59.png "Start Screen")
 
 
+Undergo the setup screens and press confirm to install the updates.
 
-
-
-> The overriding design goal for Markdown's
-> formatting syntax is to make it as readable
-> as possible. The idea is that a
-> Markdown-formatted document should be
-> publishable as-is, as plain text, without
-> looking like it's been marked up with tags
-> or formatting instructions.
-
-This text you see here is *actually* written in Markdown! To get a feel for Markdown's syntax, type some text into the left window and watch the results in the right.
-
-### Tech
-
-Dillinger uses a number of open source projects to work properly:
-
-* [AngularJS] - HTML enhanced for web apps!
-* [Ace Editor] - awesome web-based text editor
-* [markdown-it] - Markdown parser done right. Fast and easy to extend.
-* [Twitter Bootstrap] - great UI boilerplate for modern web apps
-* [node.js] - evented I/O for the backend
-* [Express] - fast node.js network app framework [@tjholowaychuk]
-* [Gulp] - the streaming build system
-* [Breakdance](http://breakdance.io) - HTML to Markdown converter
-* [jQuery] - duh
-
-And of course Dillinger itself is open source with a [public repository][dill]
- on GitHub.
-
-### Installation
-
-Dillinger requires [Node.js](https://nodejs.org/) v4+ to run.
-
-Install the dependencies and devDependencies and start the server.
-
+##### Oracle virtual Box Communication
+Fix broken dependencies
 ```sh
-$ cd dillinger
-$ npm install -d
-$ node app
+sudo apt-get install -f
+```
+Install net-tools 
+```sh
+sudo apt install net-tools
+```
+Check the second ethernet name
+```sh
+$ ifconfig -a 
 ```
 
-For production environments...
+The name here is *enp0s8*. 
 
+Open interfaces file.
 ```sh
-$ npm install --production
-$ NODE_ENV=production node app
+sudo nano etc/network/interfaces
+```
+Add to the bottom
+>auto enp0s8
+>iface enp0s8 inet static
+>address 192.168.56.100
+>netmask 255.255.255.0
+
+You might have to adjust the ethernet name accordingly.
+
+Reboot
+```sh
+sudo reboot
 ```
 
-### Plugins
-
-Dillinger is currently extended with the following plugins. Instructions on how to use them in your own application are linked below.
-
-| Plugin | README |
-| ------ | ------ |
-| Dropbox | [plugins/dropbox/README.md][PlDb] |
-| Github | [plugins/github/README.md][PlGh] |
-| Google Drive | [plugins/googledrive/README.md][PlGd] |
-| OneDrive | [plugins/onedrive/README.md][PlOd] |
-| Medium | [plugins/medium/README.md][PlMe] |
-| Google Analytics | [plugins/googleanalytics/README.md][PlGa] |
-
-
-### Development
-
-Want to contribute? Great!
-
-Dillinger uses Gulp + Webpack for fast developing.
-Make a change in your file and instantanously see your updates!
-
-Open your favorite Terminal and run these commands.
-
-First Tab:
+Ping the host machine
 ```sh
-$ node app
+ping 192.168.56.100
 ```
 
-Second Tab:
+Open hosts file
 ```sh
-$ gulp watch
+sudo nano etc/hosts and add at the bottom
+```
+Add hostnames to the bottom
+>192.168.56.101	ubuntu1
+>192.168.56.102	ubuntu2
+>192.168.56.103	ubuntu3
+
+Install *ssh* and *openserver-ssh*
+```sh
+sudo apt-get install openssh-server
+```
+Restart the network with linux command or restart all clients
+Type the following command:
+```sh
+$ sudo /etc/init.d/ssh restart
+```
+or
+```sh
+$ sudo service ssh restart
+```
+Repeat the steps for every virtual machine.
+
+##### Oracle virtual Box passwordless SSH
+Login to ubuntu@ubuntu1 and start a terminal, type
+```sh
+ssh-keygen  
+```
+Copy the public key to the target
+```sh
+scp ~/.ssh/id_rsa.pub ubuntu@ubuntu1
+scp ~/.ssh/id_rsa.pub ubuntu@ubuntu2
+scp ~/.ssh/id_rsa.pub ubuntu@ubuntu3
 ```
 
-(optional) Third:
+Connect to each remote host and copy content of ida_rsa.pub to ~/.ssh/authorized_keys
 ```sh
-$ karma test
+ssh ubuntu@ubuntu1
+cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+exit
 ```
-#### Building for source
-For production release:
 ```sh
-$ gulp build --prod
+ssh ubuntu@ubuntu2
+cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+exit
 ```
-Generating pre-built zip archives for distribution:
 ```sh
-$ gulp build dist --prod
-```
-### Docker
-Dillinger is very easy to install and deploy in a Docker container.
-
-By default, the Docker will expose port 8080, so change this within the Dockerfile if necessary. When ready, simply use the Dockerfile to build the image.
-
-```sh
-cd dillinger
-docker build -t joemccann/dillinger:${package.json.version} .
-```
-This will create the dillinger image and pull in the necessary dependencies. Be sure to swap out `${package.json.version}` with the actual version of Dillinger.
-
-Once done, run the Docker image and map the port to whatever you wish on your host. In this example, we simply map port 8000 of the host to port 8080 of the Docker (or whatever port was exposed in the Dockerfile):
-
-```sh
-docker run -d -p 8000:8080 --restart="always" <youruser>/dillinger:${package.json.version}
+ssh ubuntu@ubuntu3
+cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+exit
 ```
 
-Verify the deployment by navigating to your server address in your preferred browser.
+#### current status
 
-```sh
-127.0.0.1:8000
-```
+Remove known hosts, the all file (or explicit entries) ~/.ssh$ rm known_hosts. Known_hosts has the host information which is eventually corrupted. Login to all machines and confirm to add hosts to known hosts. → password is not needed any more. 
 
-#### Kubernetes + Google Cloud
+Repeat the same for ubuntu@ubuntu2 and for ubuntu@ubuntu3 (or login via ssh from ubuntu@ubuntu1) and repeat the same.
 
-See [KUBERNETES.md](https://github.com/joemccann/dillinger/blob/master/KUBERNETES.md)
+#### Kubernetes and Spark
+Step 2 Production deployment with Kubernetes from Gitlab
 
+Big Data Support with Kubernetes:
+Set up Kubernetes:
+https://lxd.readthedocs.io/en/latest/#installing-lxd-from-packages
+https://conjure-up.io/
+https://itnext.io/tutorial-part-1-kubernetes-up-and-running-on-lxc-lxd-b760c79cd53f
+https://kubernetes.io/docs/getting-started-guides/ubuntu/
+https://datasterix.com/2016/09/03/spark-cluster-using-multi-node-kubernetes-and-docker/
+https://kubernetes.io/docs/tasks/tools/install-kubectl/
 
-### Todos
+Docker Spark:
+https://xuri.me/2016/03/27/running-apache-spark-on-yarn-with-docker.html
+https://github.com/sequenceiq/docker-spark-native-yarn
+https://hub.docker.com/r/semantive/spark
 
- - Write MORE Tests
- - Add Night Mode
+Kubernetes spark:
+https://kubernetes.io/blog/2018/03/apache-spark-23-with-native-kubernetes/
+https://medium.com/ymedialabs-innovation/apache-spark-on-a-multi-node-cluster-b75967c8cb2b
+https://github.com/kubernetes/examples/tree/master/staging/spark
+https://github.com/GoogleCloudPlatform/spark-on-k8s-operator/blob/master/docs/user-guide.md
+https://spark.apache.org/docs/latest/running-on-kubernetes.html
 
-License
-----
+To embedd the served architecture online in a node.js html page use a generic page like www.rpage-7435748.io and embedd with:
+<iframe source=“https://www.rpage-7435748.io“>…
+Then connect to challenge and to other webpages
+→ Google Adds, Marketing, Facebook, SEO, node.js page
+Check out how to build referer pages
 
-MIT
+##### Install R Server
+Start with R for this purpose.
+Install R Server
+https://www.rstudio.com/products/rstudio/download-server/
+Control
+https://support.rstudio.com/hc/en-us/articles/200552306-Getting-Started
+Access:
+$ http://<server-ip>:8787
+Server management
+http://docs.rstudio.com/ide/server-pro/index.html
+Stop, start, dashboard:
+http://docs.rstudio.com/ide/server-pro/server-management.html
+Add user to the usergroup rstudio-admin
+https://www.howtogeek.com/50787/add-a-user-to-a-group-or-second-group-on-linux/
+Create group:
+$ sudo groupadd rstudio-admins
+Add user to group:
+$ sudo usermod -a -G rstudio-admins angel
+→ Open source version has no user dashboard privileges
+Problem: RServer Comparison to RServer pro. The R Server solutions are costly
+https://www.rstudio.com/products/rstudio-server-pro/
 
+##### Install Python pyspark
+https://pypi.org/project/pyspark
+Spark is a fast and general cluster computing system for Big Data. It provides high-level APIs in Scala, Java, Python, and R, and an optimized engine that supports general computation graphs for data analysis. 
 
-**Free Software, Hell Yeah!**
+##### Install Microsoft Machine Learning Server
+Solution 1: Use Microsoft machine learning server on a linux local server
+https://docs.microsoft.com/en-us/machine-learning-server/ 
 
-[//]: # (These are reference links used in the body of this note and get stripped out when the markdown processor does its job. There is no need to format nicely because it shouldn't be seen. Thanks SO - http://stackoverflow.com/questions/4823468/store-comments-in-markdown-syntax)
+##### Set up Tensorflow 
 
+##### Set up GPU acceleration
 
-   [dill]: <https://github.com/joemccann/dillinger>
-   [git-repo-url]: <https://github.com/joemccann/dillinger.git>
-   [john gruber]: <http://daringfireball.net>
-   [df1]: <http://daringfireball.net/projects/markdown/>
-   [markdown-it]: <https://github.com/markdown-it/markdown-it>
-   [Ace Editor]: <http://ace.ajax.org>
-   [node.js]: <http://nodejs.org>
-   [Twitter Bootstrap]: <http://twitter.github.com/bootstrap/>
-   [jQuery]: <http://jquery.com>
-   [@tjholowaychuk]: <http://twitter.com/tjholowaychuk>
-   [express]: <http://expressjs.com>
-   [AngularJS]: <http://angularjs.org>
-   [Gulp]: <http://gulpjs.com>
+##### Set up 
 
-   [PlDb]: <https://github.com/joemccann/dillinger/tree/master/plugins/dropbox/README.md>
-   [PlGh]: <https://github.com/joemccann/dillinger/tree/master/plugins/github/README.md>
-   [PlGd]: <https://github.com/joemccann/dillinger/tree/master/plugins/googledrive/README.md>
-   [PlOd]: <https://github.com/joemccann/dillinger/tree/master/plugins/onedrive/README.md>
-   [PlMe]: <https://github.com/joemccann/dillinger/tree/master/plugins/medium/README.md>
-   [PlGa]: <https://github.com/RahulHP/dillinger/blob/master/plugins/googleanalytics/README.md>
