@@ -1,9 +1,10 @@
-# Spark K8s 
+# Oracle K8s Spark Cluster
 
 #### Prerequisites
 - [Oracle Virtual Box](https://www.virtualbox.org/wiki/Downloads)
 - [Ubuntu 18.10](http://releases.ubuntu.com/)
 
+## Oracle virtual machines
 
 #### Oracle virtual Box Ubuntu
 Install Oracle virtual Box on your host system. 
@@ -45,72 +46,164 @@ Choose your time zone and set the credentials with the username *ubuntu* and the
 
 Shut down the VM by closing the window, don't save and eject the installer iso from the VM's CD drive. 
 
-Clone the VM *ubuntu1* two times and name the clones *ubuntu2* and *ubuntu3*.
+Clone the VM *ubuntu1* two times and name the clones *ubuntu2* and *ubuntu3*,
 
 ![alt text](https://raw.githubusercontent.com/EricTarantino/genericdemo/master/Bildschirmfotovom2018-12-30%2018-23-48.png "clone")
 
 The result
 ![alt text](https://raw.githubusercontent.com/EricTarantino/genericdemo/master/Bildschirmfotovom2018-12-3020-38-09.png "installed")
 
-On every virtual machine change the network setting, provide NAT adapter and host-only adapter
+On every virtual machine check the network setting, provide NAT adapter and host-only adapter,
 ![alt text](https://raw.githubusercontent.com/EricTarantino/genericdemo/master/Bildschirmfotovom2018-12-3020-50-41.png "NAT")
 
-Set the Adapter 2 to *Host-only Adapter*
+Set the Adapter 2 to *Host-only Adapter*.
 ![alt text](https://raw.githubusercontent.com/EricTarantino/genericdemo/master/Bildschirmfotovom2018-12-3021-01-11.png "Host-only Adapter")
 
-Start the virtual machine *ubuntu1*
+Do the next steps of this part for *ubuntu1*, *ubuntu2*, *ubuntu3*.
+Start the virtual machine 
 ![alt text](https://raw.githubusercontent.com/EricTarantino/genericdemo/master/Bildschirmfotovom2018-12-3018-15-59.png "Start Screen")
 
+Skip the setup screens. Confirm to install the updates.
+![alt text](https://raw.githubusercontent.com/EricTarantino/genericdemo/master/Bildschirmfotovom2018-12-3122-26-53.png "Install updates")
 
-Undergo the setup screens and press confirm to install the updates.
+The software updater finished. Restart the computer. 
+![alt text](https://raw.githubusercontent.com/EricTarantino/genericdemo/master/Bildschirmfotovom2018-12-3122-36-07.png "Reboot")
 
-##### Oracle virtual Box Communication
-Fix broken dependencies
+Open the terminal and fix broken dependencies.
 ```sh
 sudo apt-get install -f
 ```
-Install net-tools 
+
+If the dpkg manager is locked, reboot the machine and install the updates. Check e.g. by fixing broken dependencies as above.
+
+##### Oracle virtual Box Communication
+Perform this steps on every guest machine *ubuntu1*, *ubuntu2* and *ubuntu3*.
+
+Check the internet connection, ping google.
+```sh
+ping google.com
+```
+![Ping google](https://raw.githubusercontent.com/EricTarantino/genericdemo/master/Bildschirmfotovom2018-12-31%2022-46-40.png "Ping google")
+
+Check or correct the hostname e.g. for *ubuntu2* change the hostname from *ubuntu1* to *ubuntu2* (cloned machine). Open the hostname file.
+```sh
+sudo nano /etc/hostname
+```
+![Open hostname](https://raw.githubusercontent.com/EricTarantino/genericdemo/master/Bildschirmfotovom2018-12-3123-03-55.png "Openhostname")
+
+Adjust the hostname to the name of the machine e.g. *ubuntu2*
+![Adjust hostname](https://raw.githubusercontent.com/EricTarantino/genericdemo/master/Bildschirmfotovom2018-12-3123-00-32.png "Adjust hostname")
+Save the changes and close with *ctrl + x*, press *Y* and *enter*.
+
+Reboot the machine.
+```sh
+sudo reboot
+```
+Open a terminal, check the host name. 
+```sh
+hostname -f
+```
+![Hostname changed](https://raw.githubusercontent.com/EricTarantino/genericdemo/master/Bildschirmfotovom2018-12-3123-09-42.png "Hostname changed")
+
+Install net-tools.
 ```sh
 sudo apt install net-tools
 ```
-Check the second ethernet name
+![alt text](https://raw.githubusercontent.com/EricTarantino/genericdemo/master/Bildschirmfotovom2018-12-3122-52-20.png "Ping google")
+
+Check the second ethernet name.
 ```sh
 $ ifconfig -a 
 ```
+![alt text](https://raw.githubusercontent.com/EricTarantino/genericdemo/master/Bildschirmfotovom2018-12-3122-57-22.png "Ping google")
 
-The name here is *enp0s8*. 
+The <second ethernet name> here is *enp0s8*. 
 
 Open interfaces file.
 ```sh
 sudo nano etc/network/interfaces
 ```
-Add to the bottom
+Add to the bottom 
+>auto <second ethernet name>
+>iface <second ethernet name> inet static
+>address <static ip>
+>netmask 255.255.255.0
+
+E.g. with all <second ethernet name> enp0s8 this is
+for *ubuntu1*
 >auto enp0s8
 >iface enp0s8 inet static
 >address 192.168.56.100
 >netmask 255.255.255.0
 
+for *ubuntu2*
+>auto enp0s8
+>iface enp0s8 inet static
+>address 192.168.56.101
+>netmask 255.255.255.0
+
+for *ubuntu3*
+>auto enp0s8
+>iface enp0s8 inet static
+>address 192.168.56.102
+>netmask 255.255.255.0
+
 You might have to adjust the ethernet name accordingly.
 
-Reboot
+Run ifconfig -a to check the changes
+```sh
+ifconfig -a
+```
+
+Open a terminal on the host of the vm and find out the
+<host of vm hostname>.
+```sh
+hostname -f
+```
+The hostname here is angel-primergy.
+
+Open a terminal on the machine *ubuntu1*. Open the hosts file.
+```sh
+sudo nano etc/hosts
+```
+
+On the second line adjust the hostname
+>127.0.1.1 ubuntu2
+
+Add the ip addresses and hostnames to the bottom of the file.
+For *ubuntu1*
+>192.168.56.1 angel-primergy
+>192.168.56.101	ubuntu2
+>192.168.56.103	ubuntu3
+
+For *ubuntu2*
+>192.168.56.1 angel-primergy
+>192.168.56.100	ubuntu1
+>192.168.56.103	ubuntu3
+
+For *ubuntu3*
+>192.168.56.1 angel-primergy
+>192.168.56.100	ubuntu1
+>192.168.56.102	ubuntu2
+
+Reboot the machines.
 ```sh
 sudo reboot
 ```
 
-Ping the host machine
+Make sure to perform the steps on every machine.
+
+##### Checkpoint: Oracle virtual Box Communication
+Ping the host machine and every guest machine from the host machine and from every guest machine
 ```sh
-ping 192.168.56.100
+ping angel-primergy
+ping ubuntu1
+ping ubuntu2
+ping ubuntu3
 ```
 
-Open hosts file
-```sh
-sudo nano etc/hosts and add at the bottom
-```
-Add hostnames to the bottom
->192.168.56.101	ubuntu1
->192.168.56.102	ubuntu2
->192.168.56.103	ubuntu3
-
+##### Oracle virtual Box SSH
+Perform this step on every guest machine.
 Install *ssh* and *openserver-ssh*
 ```sh
 sudo apt-get install openssh-server
@@ -124,9 +217,45 @@ or
 ```sh
 $ sudo service ssh restart
 ```
-Repeat the steps for every virtual machine.
+
+On the hostname add the names to the host at the bottom
+>192.168.56.100	ubuntu1
+>192.168.56.101	ubuntu2
+>192.168.56.103	ubuntu3
+
+ssh into the machines from the host machine
+```sh
+ssh ubuntu@ubuntu1
+```
+Leave the passphrase empty. Enter the user password *ubuntu*. You are now logged in. Exit the machine by typing exit.
+```sh
+exit
+```
+For *ubuntu2* and *ubuntu3*.
+
+Clean the known host information which was added during the set up process to prevent the warning 
+>WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!
+
+Type
+```sh
+ssh-keygen -R 192.168.56.100
+ssh-keygen -R 192.168.56.101
+ssh-keygen -R 192.168.56.102
+```
+ssh into the machine ubuntu2 from the host machine
+```sh
+ssh ubuntu@ubuntu2
+```
+ssh into the machine ubuntu3 from the host machine
+```sh
+ssh ubuntu@ubuntu3
+```
+Eventually clean the known host information again.
+
+Shutdown all machines and create a Snapshot for each machine. Power the machines back up.
 
 ##### Oracle virtual Box passwordless SSH
+
 Login to ubuntu@ubuntu1 and start a terminal, type
 ```sh
 ssh-keygen  
@@ -154,35 +283,40 @@ ssh ubuntu@ubuntu3
 cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 exit
 ```
+Shutdown all machines and create a Snapshot for each machine. Power the machines back up.
 
-#### current status
 
-Remove known hosts, the all file (or explicit entries) ~/.ssh$ rm known_hosts. Known_hosts has the host information which is eventually corrupted. Login to all machines and confirm to add hosts to known hosts. → password is not needed any more. 
+## Kubernetes and Spark
 
-Repeat the same for ubuntu@ubuntu2 and for ubuntu@ubuntu3 (or login via ssh from ubuntu@ubuntu1) and repeat the same.
+#### Classic method I
+https://datasterix.com/2016/09/03/spark-cluster-using-multi-node-kubernetes-and-docker/
+https://kubernetes.io/docs/tasks/tools/install-kubectl/
+https://www.youtube.com/watch?v=zjmY0brIYvQ
 
-#### Kubernetes and Spark
-Step 2 Production deployment with Kubernetes from Gitlab
-
+#### With Conjure method II
 Big Data Support with Kubernetes:
 Set up Kubernetes:
 https://lxd.readthedocs.io/en/latest/#installing-lxd-from-packages
 https://conjure-up.io/
 https://itnext.io/tutorial-part-1-kubernetes-up-and-running-on-lxc-lxd-b760c79cd53f
 https://kubernetes.io/docs/getting-started-guides/ubuntu/
-https://datasterix.com/2016/09/03/spark-cluster-using-multi-node-kubernetes-and-docker/
-https://kubernetes.io/docs/tasks/tools/install-kubectl/
 
+#### Other sources method III
+https://medium.com/ymedialabs-innovation/apache-spark-on-a-multi-node-cluster-b75967c8cb2b
+https://github.com/GoogleCloudPlatform/spark-on-k8s-operator/blob/master/docs/user-guide.md
+
+#### Notes
+Set up Kubernetes
+https://www.youtube.com/watch?v=6xJwQgDnMFE
+Setup Kubernetes
+https://www.youtube.com/watch?v=UWg3ORRRF60
 Docker Spark:
 https://xuri.me/2016/03/27/running-apache-spark-on-yarn-with-docker.html
 https://github.com/sequenceiq/docker-spark-native-yarn
 https://hub.docker.com/r/semantive/spark
-
 Kubernetes spark:
 https://kubernetes.io/blog/2018/03/apache-spark-23-with-native-kubernetes/
-https://medium.com/ymedialabs-innovation/apache-spark-on-a-multi-node-cluster-b75967c8cb2b
 https://github.com/kubernetes/examples/tree/master/staging/spark
-https://github.com/GoogleCloudPlatform/spark-on-k8s-operator/blob/master/docs/user-guide.md
 https://spark.apache.org/docs/latest/running-on-kubernetes.html
 
 To embedd the served architecture online in a node.js html page use a generic page like www.rpage-7435748.io and embedd with:
