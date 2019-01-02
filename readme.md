@@ -95,14 +95,6 @@ Adjust the hostname to the name of the machine e.g. *ubuntu2*
 ![Adjust hostname](https://raw.githubusercontent.com/EricTarantino/genericdemo/master/Bildschirmfotovom2018-12-3123-00-32.png "Adjust hostname")
 Save the changes and close with *ctrl + x*, press *Y* and *enter*.
 
-Reboot the machine.
-```sh
-sudo reboot
-```
-Open a terminal, check the host name. 
-```sh
-hostname -f
-```
 ![Hostname changed](https://raw.githubusercontent.com/EricTarantino/genericdemo/master/Bildschirmfotovom2018-12-3123-09-42.png "Hostname changed")
 
 Install net-tools.
@@ -133,27 +125,22 @@ E.g. with all <second ethernet name> enp0s8 this is
 for *ubuntu1*
 >auto enp0s8
 >iface enp0s8 inet static
->address 192.168.56.100
+>address 192.168.56.101
 >netmask 255.255.255.0
 
 for *ubuntu2*
 >auto enp0s8
 >iface enp0s8 inet static
->address 192.168.56.101
+>address 192.168.56.102
 >netmask 255.255.255.0
 
 for *ubuntu3*
 >auto enp0s8
 >iface enp0s8 inet static
->address 192.168.56.102
+>address 192.168.56.103
 >netmask 255.255.255.0
 
 You might have to adjust the ethernet name accordingly.
-
-Run ifconfig -a to check the changes
-```sh
-ifconfig -a
-```
 
 Open a terminal on the host of the vm and find out the
 <host of vm hostname>.
@@ -167,29 +154,57 @@ Open a terminal on the machine *ubuntu1*. Open the hosts file.
 sudo nano etc/hosts
 ```
 
-On the second line adjust the hostname
+On the second line adjust the hostname for *ubuntu1*
+>127.0.1.1 ubuntu1
+
+On the second line adjust the hostname for *ubuntu2*
 >127.0.1.1 ubuntu2
+
+On the second line adjust the hostname for *ubuntu23
+>127.0.1.1 ubuntu3
 
 Add the ip addresses and hostnames to the bottom of the file.
 For *ubuntu1*
 >192.168.56.1 angel-primergy
->192.168.56.101	ubuntu2
+>192.168.56.102	ubuntu2
 >192.168.56.103	ubuntu3
 
 For *ubuntu2*
 >192.168.56.1 angel-primergy
->192.168.56.100	ubuntu1
+>192.168.56.101	ubuntu1
 >192.168.56.103	ubuntu3
 
 For *ubuntu3*
 >192.168.56.1 angel-primergy
->192.168.56.100	ubuntu1
+>192.168.56.101	ubuntu1
 >192.168.56.102	ubuntu2
+
+Save and close the file with *strg + x* and *Y* and *enter*.
 
 Reboot the machines.
 ```sh
 sudo reboot
 ```
+
+Run ifconfig -a to check the changes to the static ip adress on *ubuntu1*, *ubuntu2* and *ubuntu3*
+```sh
+ifconfig -a
+```
+
+Check the host name is set correct now on every machine to *ubuntu1*, *ubuntu2* or *ubuntu3*. 
+```sh
+hostname -f
+```
+
+Open a terminal on the host machine *<name of host>*. Open the hosts file.
+```sh
+sudo nano etc/hosts
+```
+
+Add at the bottom
+>192.168.56.101 ubuntu1
+>192.168.56.102	ubuntu2
+>192.168.56.103	ubuntu3
 
 Make sure to perform the steps on every machine.
 
@@ -203,12 +218,11 @@ ping ubuntu3
 ```
 
 ##### Oracle virtual Box SSH
-Perform this step on every guest machine.
-Install *ssh* and *openserver-ssh*
+On *ubuntu1*, *ubuntu2* and *ubuntu3*: Install *ssh* and *openserver-ssh* 
 ```sh
 sudo apt-get install openssh-server
 ```
-Restart the network with linux command or restart all clients
+On *ubuntu1*, *ubuntu2* and *ubuntu3*: Restart the network with linux command or restart all clients
 Type the following command:
 ```sh
 $ sudo /etc/init.d/ssh restart
@@ -218,88 +232,218 @@ or
 $ sudo service ssh restart
 ```
 
-On the hostname add the names to the host at the bottom
->192.168.56.100	ubuntu1
->192.168.56.101	ubuntu2
->192.168.56.103	ubuntu3
+Switch to the host sytem and open a terminal.
+Remove the vms from the known hosts
+```sh
+ssh-keygen -R ubuntu1
+ssh-keygen -R ubuntu2
+ssh-keygen -R ubuntu3
+```
 
 ssh into the machines from the host machine
 ```sh
 ssh ubuntu@ubuntu1
 ```
-Leave the passphrase empty. Enter the user password *ubuntu*. You are now logged in. Exit the machine by typing exit.
+Leave the passphrase empty. Enter the user password *ubuntu*. You are now logged in. Exit the machine, type
 ```sh
 exit
 ```
-For *ubuntu2* and *ubuntu3*.
-
-Clean the known host information which was added during the set up process to prevent the warning 
->WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!
-
-Type
-```sh
-ssh-keygen -R 192.168.56.100
-ssh-keygen -R 192.168.56.101
-ssh-keygen -R 192.168.56.102
-```
-ssh into the machine ubuntu2 from the host machine
+Also ssh into the machine ubuntu2 from the host machine 
 ```sh
 ssh ubuntu@ubuntu2
 ```
-ssh into the machine ubuntu3 from the host machine
+Leave the passphrase empty. Enter the user password *ubuntu*. You are now logged in. Exit the machine, type
+```sh
+exit
+```
+
+Also ssh into the machine ubuntu3 from the host machine
 ```sh
 ssh ubuntu@ubuntu3
 ```
-Eventually clean the known host information again.
+Leave the passphrase empty. Enter the user password *ubuntu*. You are now logged in. Exit the machine, type
+```sh
+exit
+```
+
+On *ubuntu1*, *ubuntu2* and *ubuntu3*: SSH into both guest machines and into the host machine
+```sh
+ssh ubuntu@<name of guest machine>
+```
+```sh
+ssh <user>@<name of host machine>
+```
+e.g.
+```sh
+ssh angel@angel-primergy
+```
 
 Shutdown all machines and create a Snapshot for each machine. Power the machines back up.
 
+Perform similiar steps for more machines. 
+
 ##### Oracle virtual Box passwordless SSH
 
-Login to ubuntu@ubuntu1 and start a terminal, type
+For *ubuntu1*, *ubuntu2*, *ubuntu3* and *angel-primergy* start a terminal, type
 ```sh
 ssh-keygen  
 ```
-Copy the public key to the target
-```sh
-scp ~/.ssh/id_rsa.pub ubuntu@ubuntu1
-scp ~/.ssh/id_rsa.pub ubuntu@ubuntu2
-scp ~/.ssh/id_rsa.pub ubuntu@ubuntu3
-```
+Pess enter to save as default name. Press enter to skip to create a password.
 
-Connect to each remote host and copy content of ida_rsa.pub to ~/.ssh/authorized_keys
+For each guest host and remote host clear known hosts
 ```sh
+ssh-keygen -R ubuntu1
+ssh-keygen -R ubuntu2
+ssh-keygen -R ubuntu3
+ssh-keygen -R angel-primergy
+```
+Copy content of ida_rsa.pub to ~/.ssh/authorized_keys
+```sh
+ssh-copy-id ubuntu@ubuntu1
+ssh-copy-id ubuntu@ubuntu2
+ssh-copy-id ubuntu@ubuntu3
+ssh-copy-id angel@angel-primergy
+```
+#### Checkpoint: Oracle virtual Box passwordless SSH
+SSH into all machines. Start terminal on the host machine, then
+```sh
+ssh angel@angel-primergy
 ssh ubuntu@ubuntu1
-cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 exit
-```
-```sh
 ssh ubuntu@ubuntu2
-cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 exit
-```
-```sh
 ssh ubuntu@ubuntu3
-cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+ssh ubuntu@ubuntu3
+ssh angel@angel-primergy
 exit
+ssh ubuntu@ubuntu1
+exit
+ssh ubuntu@ubuntu2
+ssh ubuntu@ubuntu2
+ssh angel@angel-primergy
+exit
+ssh ubuntu@ubuntu3
+exit
+ssh ubuntu@ubuntu1
+ssh ubuntu@ubuntu1
+ssh angel@angel-primergy
+exit
+ssh ubuntu@ubuntu2
+exit
+ssh ubuntu@ubuntu3
 ```
+Close terminal
+
+#### Create a snapshot
 Shutdown all machines and create a Snapshot for each machine. Power the machines back up.
 
 
 ## Kubernetes and Spark
 
+#### Install Kubernetes
+
+Install lxd 
+```sh
+snap install lxd
+```
+
+Set up lxd with default values
+```sh
+snap install lxd
+```
+
+Install conjure-up
+```sh
+sudo snap install conjure-up --classic
+```
+
+Add users tp usergroup lxd
+```sh
+sudo usermod -a -G lxd <user>
+newgrp lxd
+```
+Check storage
+```sh
+/snap/bin/lxc storage show default
+```
+```sh
+config:
+  source: /var/snap/lxd/common/lxd/storage-pools/default
+description: ""
+name: default
+driver: dir
+used_by:
+- /1.0/profiles/default
+```
+Check network
+```sh
+/snap/bin/lxc network show lxdbr0
+```
+```sh
+config:
+  ipv4.address: 10.101.64.1/24
+  ipv4.nat: "true"
+  ipv6.address: none
+  ipv6.nat: "false"
+description: ""
+name: lxdbr0
+type: bridge
+used_by: []
+managed: true
+```
+
+You will also want to make sure that the LXD default profile is set to use lxdbr0 as its bridge:
+```sh
+/snap/bin/lxc profile show default
+```
+```sh
+config: {}
+description: Default LXD profile
+devices:
+  eth0:
+    nictype: bridged
+    parent: lxdbr0
+    type: nic
+  root:
+    path: /
+    pool: default
+    type: disk
+name: default
+used_by: []
+```
+
+Check internet access
+```sh
+lxc launch ubuntu:16.04 u1
+lxc exec u1 ping ubuntu.com
+```
+
+Restart the machine
+```sh 
+sudo init 6
+sudo lxd init
+lxc list
+lxc launch ubuntu:16.04
+sudo snap install conjure-up --classic
+conjure-up kubernetes
+```
+
+Settings as [following]( https://www.youtube.com/watch?v=EkhjNLFaQAY)
+
+Sources: [LXD](https://lxd.readthedocs.io/en/latest/#installing-lxd-from-packages), [conjure-up]( https://conjure-up.io/)
+
+#### Install Spark on Kubernetes
+
+[Kubernetes Spark Git](https://github.com/kubernetes/examples/tree/master/staging/spark)
+
+[Kubernetes Spark Docs](https://kubernetes.io/blog/2018/03/apache-spark-23-with-native-kubernetes/)
+
+## Notes
+
 #### Classic method I
 https://datasterix.com/2016/09/03/spark-cluster-using-multi-node-kubernetes-and-docker/
 https://kubernetes.io/docs/tasks/tools/install-kubectl/
 https://www.youtube.com/watch?v=zjmY0brIYvQ
-
-#### With Conjure method II
-Big Data Support with Kubernetes:
-Set up Kubernetes:
-https://lxd.readthedocs.io/en/latest/#installing-lxd-from-packages
-https://conjure-up.io/
-https://itnext.io/tutorial-part-1-kubernetes-up-and-running-on-lxc-lxd-b760c79cd53f
-https://kubernetes.io/docs/getting-started-guides/ubuntu/
 
 #### Other sources method III
 https://medium.com/ymedialabs-innovation/apache-spark-on-a-multi-node-cluster-b75967c8cb2b
@@ -324,6 +468,8 @@ To embedd the served architecture online in a node.js html page use a generic pa
 Then connect to challenge and to other webpages
 → Google Adds, Marketing, Facebook, SEO, node.js page
 Check out how to build referer pages
+
+## Data Science Tools
 
 ##### Install R Server
 Start with R for this purpose.
@@ -355,9 +501,5 @@ Spark is a fast and general cluster computing system for Big Data. It provides h
 Solution 1: Use Microsoft machine learning server on a linux local server
 https://docs.microsoft.com/en-us/machine-learning-server/ 
 
-##### Set up Tensorflow 
-
-##### Set up GPU acceleration
-
-##### Set up 
+##### Install Tensorflow 
 
