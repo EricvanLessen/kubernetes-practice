@@ -506,8 +506,11 @@ Kubernetes spark:
 - https://github.com/kubernetes/examples/tree/master/staging/spark
 - https://spark.apache.org/docs/latest/running-on-kubernetes.html
 
-To embedd the served architecture online in a node.js html page use a generic page like www.rpage-7435748.io and embedd with:
-<iframe source=“https://www.rpage-7435748.io“>…
+To embedd the served architecture online in a node.js html page use a generic page like 
+- www.rpage-7435748.io
+
+Embedd with:
+<iframe source=“https://www.rpage-7435748.io“>
 Then connect to challenge and to other webpages
 oogle Adds, Marketing, Facebook, SEO, node.js page
 Check out how to build referer pages.
