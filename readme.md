@@ -468,7 +468,7 @@ Problem: RServer Comparison to RServer pro. The R Server solutions are costly
 - https://www.rstudio.com/products/rstudio-server-pro/
 
 ##### Install Python pyspark
--https://pypi.org/project/pyspark
+- https://pypi.org/project/pyspark
 
 Spark is a fast and general cluster computing system for Big Data. It provides high-level APIs in Scala, Java, Python, and R, and an optimized engine that supports general computation graphs for data analysis. 
 
