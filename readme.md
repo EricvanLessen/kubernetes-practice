@@ -438,37 +438,6 @@ Sources: [LXD](https://lxd.readthedocs.io/en/latest/#installing-lxd-from-package
 
 [Kubernetes Spark Docs](https://kubernetes.io/blog/2018/03/apache-spark-23-with-native-kubernetes/)
 
-## Notes
-
-#### Classic method I
-https://datasterix.com/2016/09/03/spark-cluster-using-multi-node-kubernetes-and-docker/
-https://kubernetes.io/docs/tasks/tools/install-kubectl/
-https://www.youtube.com/watch?v=zjmY0brIYvQ
-
-#### Other sources method III
-https://medium.com/ymedialabs-innovation/apache-spark-on-a-multi-node-cluster-b75967c8cb2b
-https://github.com/GoogleCloudPlatform/spark-on-k8s-operator/blob/master/docs/user-guide.md
-
-#### Notes
-Set up Kubernetes
-https://www.youtube.com/watch?v=6xJwQgDnMFE
-Setup Kubernetes
-https://www.youtube.com/watch?v=UWg3ORRRF60
-Docker Spark:
-https://xuri.me/2016/03/27/running-apache-spark-on-yarn-with-docker.html
-https://github.com/sequenceiq/docker-spark-native-yarn
-https://hub.docker.com/r/semantive/spark
-Kubernetes spark:
-https://kubernetes.io/blog/2018/03/apache-spark-23-with-native-kubernetes/
-https://github.com/kubernetes/examples/tree/master/staging/spark
-https://spark.apache.org/docs/latest/running-on-kubernetes.html
-
-To embedd the served architecture online in a node.js html page use a generic page like www.rpage-7435748.io and embedd with:
-<iframe source=“https://www.rpage-7435748.io“>…
-Then connect to challenge and to other webpages
-→ Google Adds, Marketing, Facebook, SEO, node.js page
-Check out how to build referer pages
-
 ## Data Science Tools
 
 ##### Install R Server
@@ -502,4 +471,35 @@ Solution 1: Use Microsoft machine learning server on a linux local server
 https://docs.microsoft.com/en-us/machine-learning-server/ 
 
 ##### Install Tensorflow 
+
+
+## Notes
+
+#### On CentOS 
+https://datasterix.com/2016/09/03/spark-cluster-using-multi-node-kubernetes-and-docker/
+https://kubernetes.io/docs/tasks/tools/install-kubectl/
+https://www.youtube.com/watch?v=zjmY0brIYvQ
+
+#### Additional Notes
+https://medium.com/ymedialabs-innovation/apache-spark-on-a-multi-node-cluster-b75967c8cb2b
+https://github.com/GoogleCloudPlatform/spark-on-k8s-operator/blob/master/docs/user-guide.md
+Set up Kubernetes
+https://www.youtube.com/watch?v=6xJwQgDnMFE
+Setup Kubernetes
+https://www.youtube.com/watch?v=UWg3ORRRF60
+Docker Spark:
+https://xuri.me/2016/03/27/running-apache-spark-on-yarn-with-docker.html
+https://github.com/sequenceiq/docker-spark-native-yarn
+https://hub.docker.com/r/semantive/spark
+Kubernetes spark:
+https://kubernetes.io/blog/2018/03/apache-spark-23-with-native-kubernetes/
+https://github.com/kubernetes/examples/tree/master/staging/spark
+https://spark.apache.org/docs/latest/running-on-kubernetes.html
+To embedd the served architecture online in a node.js html page use a generic page like www.rpage-7435748.io and embedd with:
+<iframe source=“https://www.rpage-7435748.io“>…
+Then connect to challenge and to other webpages
+→ Google Adds, Marketing, Facebook, SEO, node.js page
+Check out how to build referer pages
+
+
 
