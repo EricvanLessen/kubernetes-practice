@@ -443,32 +443,38 @@ Sources: [LXD](https://lxd.readthedocs.io/en/latest/#installing-lxd-from-package
 ##### Install R Server
 Start with R for this purpose.
 Install R Server
-https://www.rstudio.com/products/rstudio/download-server/
+- https://www.rstudio.com/products/rstudio/download-server/
+
 Control
-https://support.rstudio.com/hc/en-us/articles/200552306-Getting-Started
+- https://support.rstudio.com/hc/en-us/articles/200552306-Getting-Started
+
 Access:
 $ http://<server-ip>:8787
 Server management
-http://docs.rstudio.com/ide/server-pro/index.html
+- http://docs.rstudio.com/ide/server-pro/index.html
+
 Stop, start, dashboard:
-http://docs.rstudio.com/ide/server-pro/server-management.html
+- http://docs.rstudio.com/ide/server-pro/server-management.html
+
 Add user to the usergroup rstudio-admin
-https://www.howtogeek.com/50787/add-a-user-to-a-group-or-second-group-on-linux/
+- https://www.howtogeek.com/50787/add-a-user-to-a-group-or-second-group-on-linux/
+
 Create group:
 $ sudo groupadd rstudio-admins
 Add user to group:
 $ sudo usermod -a -G rstudio-admins angel
-→ Open source version has no user dashboard privileges
+pen source version has no user dashboard privileges
 Problem: RServer Comparison to RServer pro. The R Server solutions are costly
-https://www.rstudio.com/products/rstudio-server-pro/
+- https://www.rstudio.com/products/rstudio-server-pro/
 
 ##### Install Python pyspark
-https://pypi.org/project/pyspark
+-https://pypi.org/project/pyspark
+
 Spark is a fast and general cluster computing system for Big Data. It provides high-level APIs in Scala, Java, Python, and R, and an optimized engine that supports general computation graphs for data analysis. 
 
 ##### Install Microsoft Machine Learning Server
 Solution 1: Use Microsoft machine learning server on a linux local server
-https://docs.microsoft.com/en-us/machine-learning-server/ 
+- https://docs.microsoft.com/en-us/machine-learning-server/ 
 
 ##### Install Tensorflow 
 
@@ -476,30 +482,35 @@ https://docs.microsoft.com/en-us/machine-learning-server/
 ## Notes
 
 #### On CentOS 
-https://datasterix.com/2016/09/03/spark-cluster-using-multi-node-kubernetes-and-docker/
-https://kubernetes.io/docs/tasks/tools/install-kubectl/
-https://www.youtube.com/watch?v=zjmY0brIYvQ
+- https://datasterix.com/2016/09/03/spark-cluster-using-multi-node-kubernetes-and-docker/
+- https://kubernetes.io/docs/tasks/tools/install-kubectl/
+- https://www.youtube.com/watch?v=zjmY0brIYvQ
 
 #### Additional Notes
-https://medium.com/ymedialabs-innovation/apache-spark-on-a-multi-node-cluster-b75967c8cb2b
-https://github.com/GoogleCloudPlatform/spark-on-k8s-operator/blob/master/docs/user-guide.md
+- https://medium.com/ymedialabs-innovation/apache-spark-on-a-multi-node-cluster-b75967c8cb2b
+- https://github.com/GoogleCloudPlatform/spark-on-k8s-operator/blob/master/docs/user-guide.md
+
 Set up Kubernetes
-https://www.youtube.com/watch?v=6xJwQgDnMFE
+- https://www.youtube.com/watch?v=6xJwQgDnMFE
+
 Setup Kubernetes
-https://www.youtube.com/watch?v=UWg3ORRRF60
+- https://www.youtube.com/watch?v=UWg3ORRRF60
+
 Docker Spark:
-https://xuri.me/2016/03/27/running-apache-spark-on-yarn-with-docker.html
-https://github.com/sequenceiq/docker-spark-native-yarn
-https://hub.docker.com/r/semantive/spark
+- https://xuri.me/2016/03/27/running-apache-spark-on-yarn-with-docker.html
+- https://github.com/sequenceiq/docker-spark-native-yarn
+- https://hub.docker.com/r/semantive/spark
+
 Kubernetes spark:
-https://kubernetes.io/blog/2018/03/apache-spark-23-with-native-kubernetes/
-https://github.com/kubernetes/examples/tree/master/staging/spark
-https://spark.apache.org/docs/latest/running-on-kubernetes.html
+- https://kubernetes.io/blog/2018/03/apache-spark-23-with-native-kubernetes/
+- https://github.com/kubernetes/examples/tree/master/staging/spark
+- https://spark.apache.org/docs/latest/running-on-kubernetes.html
+
 To embedd the served architecture online in a node.js html page use a generic page like www.rpage-7435748.io and embedd with:
 <iframe source=“https://www.rpage-7435748.io“>…
 Then connect to challenge and to other webpages
-→ Google Adds, Marketing, Facebook, SEO, node.js page
-Check out how to build referer pages
+oogle Adds, Marketing, Facebook, SEO, node.js page
+Check out how to build referer pages.
 
 
 
