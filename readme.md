@@ -337,11 +337,12 @@ Close terminal
 #### Create a snapshot
 Shutdown all machines and create a Snapshot for each machine. Power the machines back up.
 
-
-## Kubernetes and Spark
-
+## Method I Install Kubernetes
 #### Install Kubernetes
+- https://www.edureka.co/blog/install-kubernetes-on-ubuntu
 
+### Method II 
+#### Install Kubernetes with conjure-u
 Install lxd 
 ```sh
 snap install lxd
@@ -432,13 +433,11 @@ Settings as [following]( https://www.youtube.com/watch?v=EkhjNLFaQAY)
 
 Sources: [LXD](https://lxd.readthedocs.io/en/latest/#installing-lxd-from-packages), [conjure-up]( https://conjure-up.io/)
 
-#### Install Spark on Kubernetes
-
+### Install Kubernetes Spark
+This in the documentation:
 [Kubernetes Spark Git](https://github.com/kubernetes/examples/tree/master/staging/spark)
 
-[Kubernetes Spark Docs](https://kubernetes.io/blog/2018/03/apache-spark-23-with-native-kubernetes/)
-
-## Data Science Tools
+### Data Science Tools
 
 ##### Install R Server
 Start with R for this purpose.
@@ -477,9 +476,28 @@ Solution 1: Use Microsoft machine learning server on a linux local server
 - https://docs.microsoft.com/en-us/machine-learning-server/ 
 
 ##### Install Tensorflow 
+ [Tensorflow](www.tensorflow.com)
+
+#### Other notes Install Kubernetes directly
+Set up Kubernetes in 10 Minutes
+- https://www.youtube.com/watch?v=6xJwQgDnMFE
+Funktioniert nicht, Kubelet error
+
+Setup Kubernetes Edureka
+- https://www.youtube.com/watch?v=UWg3ORRRF60
+
+- https://www.edureka.co/blog/install-kubernetes-on-ubuntu
+
+#### Install Kubernetes Spark
+
+This in the documentation:
+[Kubernetes Spark Git](https://github.com/kubernetes/examples/tree/master/staging/spark)
+
+[Kubernetes Spark Docs](https://kubernetes.io/blog/2018/03/apache-spark-23-with-native-kubernetes/)
 
 
-## Notes
+
+## NOTES NOTES NOTES NOTES
 
 #### On CentOS 
 - https://datasterix.com/2016/09/03/spark-cluster-using-multi-node-kubernetes-and-docker/
@@ -489,13 +507,7 @@ Solution 1: Use Microsoft machine learning server on a linux local server
 #### Additional Notes
 - https://medium.com/ymedialabs-innovation/apache-spark-on-a-multi-node-cluster-b75967c8cb2b
 - https://github.com/GoogleCloudPlatform/spark-on-k8s-operator/blob/master/docs/user-guide.md
-
-Set up Kubernetes
-- https://www.youtube.com/watch?v=6xJwQgDnMFE
-
-Setup Kubernetes
-- https://www.youtube.com/watch?v=UWg3ORRRF60
-
+- 
 Docker Spark:
 - https://xuri.me/2016/03/27/running-apache-spark-on-yarn-with-docker.html
 - https://github.com/sequenceiq/docker-spark-native-yarn
