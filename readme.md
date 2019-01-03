@@ -1,6 +1,5 @@
-# Oracle K8s Spark Cluster
-
-#### Prerequisites
+# K8s Spark
+## Downloads
 - [Oracle Virtual Box](https://www.virtualbox.org/wiki/Downloads)
 - [Ubuntu 18.10](http://releases.ubuntu.com/)
 
@@ -574,6 +573,8 @@ conjure-up kubernetes
 ```
 Follow the installation steps. Choose Kubernetes full installation, choose local installation and leave all other to default. 
 
+Sidenote: Conjure-up has an option for a GPU accelerated setup for a Hadoop Cluster (not tested here).
+
 ### Install Kubernetes Spark
 Follow the official Kubernetes Spark example documentation
 [Kubernetes Spark Git](https://github.com/kubernetes/examples/tree/master/staging/spark)
@@ -605,74 +606,18 @@ $ sudo usermod -a -G rstudio-admins <username>
 ```
 The open source version has no user dashboard privileges and no security functionalities. 
 
-
 ##### Install Python pyspark
 Follow the [pyspark documentation](https://pypi.org/project/pyspark)
 
 ##### Install Microsoft Machine Learning Server
 Use [Microsoft machine learning server](https://docs.microsoft.com/en-us/machine-learning-server/) on a linux local server to access microsoft ML libraries with Python or Spark.
 
-
 ##### Install Tensorflow 
  [Tensorflow](www.tensorflow.com)
  
 ##### Forecasting
-For forecasting, choose the algorithm from the R or Python libraries and pay attention to feature selection, clustering and several detail. Visualize the results. To access more data, connect to a hadoop data lake with e.g. HBase or use the Cassandra Connector. 
+For forecasting, choose the algorithm from the R or Python libraries and pay attention to the details. Also try Coffe, Tensforflow on Spark, GP. Visualize the results. 
+To access more data, connect to a full hadoop data lake with e.g. HBase or use the Cassandra Connector. 
 
-#### Other notes Install Kubernetes directly
-Set up Kubernetes in 10 Minutes
-- https://www.youtube.com/watch?v=6xJwQgDnMFE
-Funktioniert nicht, Kubelet error
-
-Setup Kubernetes Edureka
-- https://www.youtube.com/watch?v=UWg3ORRRF60
-
-- https://www.edureka.co/blog/install-kubernetes-on-ubuntu
-
-#### Install Kubernetes Spark
-
-This in the documentation:
-[Kubernetes Spark Git](https://github.com/kubernetes/examples/tree/master/staging/spark)
-
-[Kubernetes Spark Docs](https://kubernetes.io/blog/2018/03/apache-spark-23-with-native-kubernetes/)
-
-
-
-## NOTES NOTES NOTES NOTES
-
-#### On CentOS 
-- https://datasterix.com/2016/09/03/spark-cluster-using-multi-node-kubernetes-and-docker/
-- https://kubernetes.io/docs/tasks/tools/install-kubectl/
-- https://www.youtube.com/watch?v=zjmY0brIYvQ
-
-#### Additional Notes
-- https://medium.com/ymedialabs-innovation/apache-spark-on-a-multi-node-cluster-b75967c8cb2b
-- https://github.com/GoogleCloudPlatform/spark-on-k8s-operator/blob/master/docs/user-guide.md
-- 
-Docker Spark:
-- https://xuri.me/2016/03/27/running-apache-spark-on-yarn-with-docker.html
-- https://github.com/sequenceiq/docker-spark-native-yarn
-- https://hub.docker.com/r/semantive/spark
-
-Kubernetes spark:
-- https://kubernetes.io/blog/2018/03/apache-spark-23-with-native-kubernetes/
-- https://github.com/kubernetes/examples/tree/master/staging/spark
-- https://spark.apache.org/docs/latest/running-on-kubernetes.html
-
-To embedd the served architecture online in a node.js html page use a generic page like 
-- www.rpage-7435748.io
-
-Embedd with:
-<iframe source=“https://www.rpage-7435748.io“>
-Then connect to challenge and to other webpages
-oogle Adds, Marketing, Facebook, SEO, node.js page
-Check out how to build referer pages.
-
-More notes:
-As [following]( https://www.youtube.com/watch?v=EkhjNLFaQAY)
-Sources: [LXD](https://lxd.readthedocs.io/en/latest/#installing-lxd-from-packages), [conjure-up]( https://conjure-up.io/)
-
-Install Kubernetes
-- https://www.edureka.co/blog/install-kubernetes-on-ubuntu
 
 
