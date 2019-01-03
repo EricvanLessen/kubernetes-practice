@@ -337,12 +337,150 @@ Close terminal
 #### Create a snapshot
 Shutdown all machines and create a Snapshot for each machine. Power the machines back up.
 
-## Method I Install Kubernetes
-#### Install Kubernetes
-- https://www.edureka.co/blog/install-kubernetes-on-ubuntu
+## Install Kubernetes
+#### Method I: Install Kubernetes
+Pre-requisites To Install Kubernetes 
 
-### Method II 
-#### Install Kubernetes with conjure-u
+The following setting is recommended
+
+Master:
+
+    2 GB RAM
+    2 Cores of CPU
+
+Slave/ Node:
+
+    1 GB RAM
+    1 Core of CPU
+
+The machines can be set up as stated earlier.
+
+Let’s call the the master as ‘kmaster‘ and node as ‘knode‘. 
+
+Login as ‘sudo’ user 
+```sh
+$ sudo su
+# apt-get update
+```
+
+Turn off swap space. Open the ‘fstab’ file and comment out the line which has mention of swap partition.
+```sh
+swapoff -a
+nano /etc/fstab
+```
+Then press ‘Ctrl+X’, then press ‘Y’ and then press ‘Enter’ to Save the file.
+
+Update The Hostnames. Rename the master machine to ‘kmaster’ and your node machine to ‘knode’. 
+```sh
+nano /etc/hostname
+```
+Then press ‘Ctrl+X’, then press ‘Y’ and then press ‘Enter’ to Save the file.
+Run the following command on both machines to note the IP addresses of each.
+```sh
+ifconfig
+```
+Now go to the ‘hosts’ file on both the master and node and add an entry specifying their respective IP addresses along with their names ‘kmaster’ and ‘knode’. 
+
+Also check that the ip adresses are set to static as stated earlier. 
+```sh
+nano /etc/network/interfaces
+```
+After this, restart your machine(s).
+
+Make sure openssh-server is installed as stated earlier. 
+Install Docker because Docker images will be used for managing the containers.
+```sh
+sudo su
+apt-get update 
+apt-get install -y docker.io
+```
+
+Install these 3 essential components for setting up Kubernetes environment: kubeadm, kubectl, and kubelet.
+```sh
+# apt-get update && apt-get install -y apt-transport-https curl
+# curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+# cat <<EOF >/etc/apt/sources.list.d/kubernetes.list
+deb http://apt.kubernetes.io/ kubernetes-xenial main
+EOF
+# apt-get update
+```
+
+Install the 3 essential components. Kubelet is the lowest level component in Kubernetes. It’s responsible for what’s running on an individual machine. Kuebadm is used for administrating the Kubernetes cluster. Kubectl is used for controlling the configurations on various nodes inside the cluster.
+```sh
+apt-get install -y kubelet kubeadm kubectl 
+```
+Change the configuration file of Kubernetes.
+```sh
+nano /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+```
+ open a text editor, enter the following line after the last “Environment Variable”:
+```sh
+Environment=”cgroup-driver=systemd/cgroup-driver=cgroupfs”
+```
+Now press Ctrl+X, then press Y, and then press Enter to Save.
+These steps will only be executed on the master node (kmaster VM).
+We will now start our Kubernetes cluster from the master’s machine.
+```sh
+# kubeadm init --apiserver-advertise-address=<ip-address-of-kmaster-vm> --pod-network-cidr=192.168.0.0/16
+```
+You will get the below output. The commands marked as (1), execute them as a non-root user. This will enable you to use kubectl from the CLI
+The command marked as (2) should also be saved for future. This will be used to join nodes to your cluster.
+Run the commands from the above output as a non-root user.
+```sh
+$ mkdir -p $HOME/.kube
+$ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+$ sudo chown $(id -u):$(id -g) $HOME/.kube/config
+```
+Verify and see all pods running expect kube-dns
+```sh
+kubectl get pods -o wide --all-namespaces
+```
+all the pods are running except one: ‘kube-dns’. For resolving this we will install a pod network. To install the CALICO pod network, run the following command
+```sh
+kubectl apply -f https://docs.projectcalico.org/v3.0/getting-started/kubernetes/installation/hosted/kubeadm/1.7/calico.yaml 
+```
+See all pods shift to the running state.
+Install the dashboard. 
+```sh
+kubectl create -f https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml
+```
+If you check the pods again, your dashboard is in running state. 
+By default dashboard will not be visible on the Master VM, change this.
+```sh
+kubectl proxy
+```
+You get an output like starting to serve at 127.0.0.1:8001.
+View the dashboard in the browser, navigate to the following address in the browser of your Master VM: http://localhost:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/.
+Enter credentials, choose Token and work on getting the token next.
+Create the service account for the dashboard and get it’s credentials.
+Run all these commands in a new terminal, or your kubectl proxy command will stop. 
+Create a service account for dashboard in the default namespace.
+```sh
+kubectl create serviceaccount dashboard -n default
+```
+Add the cluster binding rules to your dashboard account
+```sh
+kubectl create clusterrolebinding dashboard-admin -n default \
+  --clusterrole=cluster-admin \
+  --serviceaccount=default:dashboard
+```
+The token required for your dashboard login
+```sh
+kubectl get secret $(kubectl get serviceaccount dashboard -o jsonpath="{.secrets[0].name}") -o jsonpath="{.data.token}" | base64 --decode
+```
+Copy this token and paste it in Dashboard Login Page where you chose the Token option.
+You have successfully logged into your dashboard!
+
+For Only Kubernetes Node VM (knode): 
+It is time to get your node, to join the cluster! This is probably the only step that you will be doing on the node, after installing kubernetes on it.
+Run the join command that you saved, when you ran ‘kubeadm init’ command on the master.
+Run this command with “sudo”. 
+```sh
+sudo kubeadm join --apiserver-advertise-address=<ip-address-of-the master> --pod-network-cidr=192.168.0.0/16
+```
+The Kuberenetes Cluster is ready. Similiarly add more nodes. 
+
+#### Method II: Install Kubernetes with conjure-u
 Install lxd 
 ```sh
 snap install lxd
@@ -423,60 +561,63 @@ Restart the machine
 ```sh 
 sudo init 6
 sudo lxd init
+```
+For the settings, leave all as default expect
+Name of storage backend to use [...]: dir
+What Ipv6 adress should be used[...]: none
+
+```sh
 lxc list
 lxc launch ubuntu:16.04
 sudo snap install conjure-up --classic
 conjure-up kubernetes
 ```
-
-Settings as [following]( https://www.youtube.com/watch?v=EkhjNLFaQAY)
-
-Sources: [LXD](https://lxd.readthedocs.io/en/latest/#installing-lxd-from-packages), [conjure-up]( https://conjure-up.io/)
+Follow the installation steps. Choose Kubernetes full installation, choose local installation and leave all other to default. 
 
 ### Install Kubernetes Spark
-This in the documentation:
+Follow the official Kubernetes Spark example documentation
 [Kubernetes Spark Git](https://github.com/kubernetes/examples/tree/master/staging/spark)
+
+### Read and write data from cassandra
+This is not a [five minute tutorial](https://github.com/datastax/spark-cassandra-connector/blob/master/doc/0_quick_start.md)
 
 ### Data Science Tools
 
 ##### Install R Server
 Start with R for this purpose.
-Install R Server
-- https://www.rstudio.com/products/rstudio/download-server/
+Install (R Server)[https://www.rstudio.com/products/rstudio/download-server/]
 
-Control
-- https://support.rstudio.com/hc/en-us/articles/200552306-Getting-Started
+Get [started with R Server](https://support.rstudio.com/hc/en-us/articles/200552306-Getting-Started)
 
-Access:
-$ http://<server-ip>:8787
-Server management
-- http://docs.rstudio.com/ide/server-pro/index.html
+Access R Server over http://<server-ip>:8787. 
 
-Stop, start, dashboard:
-- http://docs.rstudio.com/ide/server-pro/server-management.html
+Check the [Server management](http://docs.rstudio.com/ide/server-pro/index.html) especially how to stop and start the dashboard.
 
-Add user to the usergroup rstudio-admin
-- https://www.howtogeek.com/50787/add-a-user-to-a-group-or-second-group-on-linux/
+Add a user to the [usergroup rstudio-admin](https://www.howtogeek.com/50787/add-a-user-to-a-group-or-second-group-on-linux/)
 
-Create group:
+This is basically create group
+```sh
 $ sudo groupadd rstudio-admins
-Add user to group:
-$ sudo usermod -a -G rstudio-admins angel
-pen source version has no user dashboard privileges
-Problem: RServer Comparison to RServer pro. The R Server solutions are costly
-- https://www.rstudio.com/products/rstudio-server-pro/
+```
+and add user to group
+```sh
+$ sudo usermod -a -G rstudio-admins <username>
+```
+The open source version has no user dashboard privileges and no security functionalities. 
+
 
 ##### Install Python pyspark
-- https://pypi.org/project/pyspark
-
-Spark is a fast and general cluster computing system for Big Data. It provides high-level APIs in Scala, Java, Python, and R, and an optimized engine that supports general computation graphs for data analysis. 
+Follow the [pyspark documentation](https://pypi.org/project/pyspark)
 
 ##### Install Microsoft Machine Learning Server
-Solution 1: Use Microsoft machine learning server on a linux local server
-- https://docs.microsoft.com/en-us/machine-learning-server/ 
+Use [Microsoft machine learning server](https://docs.microsoft.com/en-us/machine-learning-server/) on a linux local server to access microsoft ML libraries with Python or Spark.
+
 
 ##### Install Tensorflow 
  [Tensorflow](www.tensorflow.com)
+ 
+##### Forecasting
+For forecasting, choose the algorithm from the R or Python libraries and pay attention to feature selection, clustering and several detail. Visualize the results. To access more data, connect to a hadoop data lake with e.g. HBase or use the Cassandra Connector. 
 
 #### Other notes Install Kubernetes directly
 Set up Kubernetes in 10 Minutes
@@ -527,5 +668,11 @@ Then connect to challenge and to other webpages
 oogle Adds, Marketing, Facebook, SEO, node.js page
 Check out how to build referer pages.
 
+More notes:
+As [following]( https://www.youtube.com/watch?v=EkhjNLFaQAY)
+Sources: [LXD](https://lxd.readthedocs.io/en/latest/#installing-lxd-from-packages), [conjure-up]( https://conjure-up.io/)
+
+Install Kubernetes
+- https://www.edureka.co/blog/install-kubernetes-on-ubuntu
 
 
