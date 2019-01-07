@@ -337,6 +337,8 @@ Close terminal
 Shutdown all machines and create a Snapshot for each machine. Power the machines back up.
 
 ## Install Kubernetes
+Video from Edureka [Edureka Demo](https://www.youtube.com/watch?v=UWg3ORRRF60)
+
 #### Method I: Install Kubernetes
 Pre-requisites To Install Kubernetes 
 
@@ -418,6 +420,11 @@ Environment=”cgroup-driver=systemd/cgroup-driver=cgroupfs”
 ```
 Now press Ctrl+X, then press Y, and then press Enter to Save.
 These steps will only be executed on the master node (kmaster VM).
+Run the docker command
+```sh
+systemctl enable docker.service
+```
+
 We will now start our Kubernetes cluster from the master’s machine.
 ```sh
 # kubeadm init --apiserver-advertise-address=<ip-address-of-kmaster-vm> --pod-network-cidr=192.168.0.0/16
