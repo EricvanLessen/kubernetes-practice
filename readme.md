@@ -93,10 +93,9 @@ Congratulations! You have successfully set up a Kubernetes cluster with one mast
 
 
 
-Kubernetes lab
-================
+Kubernetes lab, K8s Spark Setup
+================================ 
 
-# K8s Spark Setup
 ## Download Resources
 - [Oracle Virtual Box](https://www.virtualbox.org/wiki/Downloads)
 - [Ubuntu 18.10](http://releases.ubuntu.com/)
