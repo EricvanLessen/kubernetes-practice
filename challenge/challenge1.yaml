@@ -1,0 +1,25 @@
+# Add a total at the end
+
+fruit:
+  red:
+    - strawberry
+    - tomato
+  orange: 
+    - orange
+  yellow: 
+    - banana
+  green: 
+    - grapes
+    - watermelon
+  total: 6
+ 
+veg:
+  yellow: 
+    - peppers
+  orange: 
+    - carrot
+  green: 
+    - broccoli
+    - cabbage
+    - lettuce
+  total: 5
